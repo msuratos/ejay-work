@@ -39,35 +39,32 @@ void loop() {
   int topSwitchState = topLimiteSwitch.getState();
   int bottomSwitchState = bottomLimitSwitch.getState();
 
-  // top switch is pressed and bottom switch is not pressed
-  // if (topSwitchState == LOW) {
-  //   clockwise = true;
-  // }
+  // top switch is pressed, set clockwise and wait 3 seconds
+  if (topSwitchState.isPressed() || topSwitchState == HIGH) {
+    clockwise = true;
 
-  // if (topSwitchState.isPressed()) {
-  //   clockwise = true;
-  // }
+    digitalWrite(LED_BUILTIN, LOW);   // turn LED off, meaning the motor is not moving
+    delay(3000);
+  }
 
-  // if (topSwitchState.isRelease()) {
-  //   clockwise = false;
-  // }
+  // bottom switch is pressed, set clockwise and wait 5 seconds
+  if (bottomSwitchState.isPressed() || bottomSwitchState == HIGH) {
+    clockwise = false;
 
+    digitalWrite(LED_BUILTIN, LOW);   // turn LED off, meaning the motor is not moving
+    delay(5000);
+  }
+
+  // if clockwise, top switch was pressed, so continue spinning the motor clockwise
+  // until we get bottom switch pressed
   if (clockwise) {
     digitalWrite(LED_BUILTIN, HIGH);  // turn LED on, meaning the motor is moving
-    stepper.step(800*8);              // 800 is 360 deg rotation. 800 * 8 means 8 rotations
-
-    digitalWrite(LED_BUILTIN, LOW);   // turn LED off, meaning the motor is not moving
-    delay(5000);                      // wait 5 seconds
-    
-    clockwise = false;
+    stepper.step(800*1);              // 800 is 360 deg rotation. 800 * 1 means 1 rotation
   }
+  // if not clockwise, bottom switch was pressed, so continue spinning the motor counter-clockwise
+  // until we get top switch pressed
   else {
     digitalWrite(LED_BUILTIN, HIGH);  // turn LED on, meaning the motor is moving
-    stepper.step(-800*8);            // 800 is 360 deg rotation. 800 * 8 means 8 rotations
-
-    digitalWrite(LED_BUILTIN, LOW);   // turn LED off, meaning the motor is not moving
-    delay(3000);                      // wait 3 seconds
-    
-    clockwise = true;
+    stepper.step(-800*1);            // 800 is 360 deg rotation. 800 * 1 means 1 rotation
   }
 }
